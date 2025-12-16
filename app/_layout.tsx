@@ -1,24 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Platform, View } from 'react-native'
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useFonts } from 'expo-font'
+import { Slot } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { globalStyles } from '@/styles/global-styles'
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+import * as NavigationBar from 'expo-navigation-bar'; //Para la barra de navegación en Android
+
+const isAndroid = Platform.OS === 'android';
+
+if (isAndroid) {
+  NavigationBar.setBackgroundColorAsync('#1E1E1E'); // Color de fondo oscuro
+  NavigationBar.setButtonStyleAsync('light'); // Establece los botones en estilo claro para mejor visibilidad
+} //Esto no se ejecuta en iOS, ya que no tiene barra de navegación como Android
+
+
+const RootLayout = () => {
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf')
+  })
+
+
+
+  if(!loaded){
+    return null
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    <View style={globalStyles.background}>
+      <Slot/> 
+      {/* Renderiza los componentes que estén al mismo nivel que este componente, es esta caso el index.tsx va acá */}
+      <StatusBar style='light'/>
+    </View>
+  )
 }
+
+export default RootLayout
