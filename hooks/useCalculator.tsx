@@ -15,9 +15,19 @@ export const useCalculator = () => {
   const lastOperation = useRef<Operator>(undefined);
 
   useEffect(() => {
-    //Falta calcular subresultado inferior a la cuenta
-    setFormula(number);
+    if(lastOperation.current) {
+      const firstFormulaPart = formula.split(" ").at(0); //Parte antes del espacio (el primer numero)
+      setFormula(`${firstFormulaPart} ${lastOperation.current} ${number}`); //Actualiza la formula con la operacion y el numero actual
+    } else {
+      setFormula(number);
+    }
   }, [number]);
+
+  useEffect(() => {
+    const subResult = calculateSubResult();
+    setFirstNumber(`${subResult}`);
+    
+  }, [formula]);
 
   //Boton de borrar todo
   const clean = () => {
@@ -54,36 +64,69 @@ export const useCalculator = () => {
   };
 
   const setLastNumber = () => {
-    //Calculo previo
+    calculateResult();
 
     if (number.endsWith(".")) {
       setFirstNumber(number.slice(0, -1));
-    }else{
-      setFirstNumber(number);
-      setNumber("0"); 
+    }
+    setFirstNumber(number);
+    setNumber("0");
+  };
+
+  //Boton de dividir
+  const divideOperation = () => {
+    setLastNumber();
+    lastOperation.current = Operator.divide;
+  };
+  //Boton de multiplicar
+  const multiplyOperation = () => {
+    setLastNumber();
+    lastOperation.current = Operator.multiply;
+  };
+  //Boton de restar
+  const subtractOperation = () => {
+    setLastNumber();
+    lastOperation.current = Operator.subtract;
+  };
+  //Boton de sumar
+  const addOperation = () => {
+    setLastNumber();
+    lastOperation.current = Operator.add;
+  };
+  //Boton de igual
+  const equalOperation = () => {
+    setLastNumber();
+  };
+  //Calcular resultado
+  const calculateSubResult = () => {
+    const [firstValue, operator, secondValue] = formula.split(" ");
+    const num1 = Number(firstValue);
+    const num2 = Number(secondValue);
+
+    if(isNaN (num2)) return num1;
+
+    switch (operator) {
+      case Operator.add:
+        return num1 + num2;
+      case Operator.subtract:
+        return num1 - num2;
+      case Operator.multiply:
+        return num1 * num2;
+      case Operator.divide:
+        return num1 / num2
+      default:
+        throw new Error(`La operacion ${operator} no es valida`);
     }
   }
 
-  //Boton de dividir
-  const divideOperation = ()=>{
-    setLastNumber();
-    lastOperation.current = Operator.divide;
-  }
-  //Boton de multiplicar
-  const multiplyOperation = ()=>{
-
-  }
-  //Boton de restar
-  const subtractOperation = ()=>{
-
-  }
-  //Boton de sumar
-  const addOperation = ()=>{
-
-  }
-  //Boton de igual
-  const equalOperation = ()=>{
-
+  //Igualar
+  const calculateResult = ()=>{
+    const result = calculateSubResult();
+    setNumber(`${result}`);
+    setFormula(`${result}`);
+    setFirstNumber("0");
+    lastOperation.current = undefined;
+    return result;
   }
 
   //Construir numero arriba
@@ -130,5 +173,7 @@ export const useCalculator = () => {
     addOperation,
     equalOperation,
     buildNumber,
+    calculateSubResult,
+    calculateResult
   };
 };

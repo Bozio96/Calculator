@@ -16,7 +16,8 @@ const CalculatorApp = () => {
     multiplyOperation,
     subtractOperation,
     addOperation,
-    equalOperation,
+    calculateSubResult,
+    calculateResult,
     buildNumber,
   } = useCalculator();
   return (
@@ -47,7 +48,7 @@ const CalculatorApp = () => {
           onPress={changeSign}
         />
         <CustomButton
-          label="del"
+          label="⌫"
           color={Colors.lightGray}
           blackText
           onPress={removeLastDigit}
@@ -144,7 +145,7 @@ const CalculatorApp = () => {
         <CustomButton
           label="="
           color={Colors.orange}
-          onPress={equalOperation}
+          onPress={calculateResult}
         />
       </View>
     </View>
