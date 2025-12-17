@@ -11,8 +11,10 @@ import * as NavigationBar from 'expo-navigation-bar'; //Para la barra de navegac
 const isAndroid = Platform.OS === 'android';
 
 if (isAndroid) {
-  NavigationBar.setBackgroundColorAsync('#1E1E1E'); // Color de fondo oscuro
+  //NavigationBar.setBackgroundColorAsync('#1E1E1E'); // Color de fondo oscuro
   NavigationBar.setButtonStyleAsync('light'); // Establece los botones en estilo claro para mejor visibilidad
+  // No es necesario setBackgroundColorAsync cuando el modo edge-to-edge está habilitado,
+  // ya que la barra se vuelve transparente para mostrar el fondo de la app.
 } //Esto no se ejecuta en iOS, ya que no tiene barra de navegación como Android
 
 
